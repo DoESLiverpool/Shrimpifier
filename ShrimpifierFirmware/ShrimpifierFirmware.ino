@@ -373,6 +373,8 @@ void getFuseBytes ()
 // burn the bootloader to the target device
 void writeBootloader ()
   {
+    // Let the user know we're doing something
+    digitalWrite(kFlashingPin, HIGH);
 
   if (signatures [foundSig].bootloader == 0)
     {
@@ -412,10 +414,12 @@ void writeBootloader ()
       )
     {
     Serial.println (F("Type 'L' to use Lilypad (8 MHz) loader, or 'U' for Uno (16 MHz) loader ..."));   
-    do
-      {
-      subcommand = toupper (Serial.read ());
-      } while (subcommand != 'L' && subcommand != 'U');
+    // As we don't have a serial interface normally, just assume
+    // we want the Uno loader
+    //do
+    //  {
+    //  subcommand = toupper (Serial.read ());
+    //  } while (subcommand != 'L' && subcommand != 'U');
     
     if (subcommand == 'L')  // use internal 8 MHz clock
       {
@@ -433,11 +437,13 @@ void writeBootloader ()
   unsigned long oldPage = addr & pagemask;
 
   Serial.println (F("Type 'V' to verify, or 'G' to program the chip with the bootloader ..."));
-  char command;
-  do
-    {
-    command = toupper (Serial.read ());
-    } while (command != 'G' && command != 'V');
+  // And we'll assume we want to program the chip rather than verify
+  char command = 'G';
+  //char command;
+  //do
+  //  {
+  //  command = toupper (Serial.read ());
+  //  } while (command != 'G' && command != 'V');
 
   if (command == 'G')
     {
@@ -527,6 +533,8 @@ void writeBootloader ()
     getFuseBytes ();
     }  // end if programming
     
+    // Let the user know we're doing something
+    digitalWrite(kFlashingPin, LOW);
   Serial.println (F("Done."));
 
   } // end of writeBootloader
